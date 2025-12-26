@@ -65,7 +65,7 @@ jobs:
       - name: Generate Data Cache
         working-directory: trease-backend
         run: bun run cache-gen/generate_entity_data.ts
-      
+
       - name: Prepare output for GitHub Pages
         run: |
           mkdir -p _site
@@ -77,6 +77,11 @@ jobs:
             echo '<!DOCTYPE html><html><head><title>Image Cache</title></head><body><h1>Image Cache Generated</h1><p>Last updated: '"$(date -u)"'</p></body></html>' > _site/index.html
           fi
       
+      - name: Copy Additional Assets
+        run: |
+          # Copy any additional assets needed for the cache display
+          cp cache/* _site/ 2>/dev/null || true
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
