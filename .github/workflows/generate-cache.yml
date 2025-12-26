@@ -54,9 +54,13 @@ jobs:
         working-directory: trease-backend
         run: bun install
       
-      - name: Run cache generation script
+      - name: Generate Image Cache
         working-directory: trease-backend
         run: bun run cache-gen/generate_image_cache.ts
+      
+      - name: Generate Video Cache
+        working-directory: trease-backend
+        run: bun run cache-gen/generate_video_cache.ts
       
       - name: Prepare output for GitHub Pages
         run: |
