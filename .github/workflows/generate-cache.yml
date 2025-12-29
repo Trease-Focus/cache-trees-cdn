@@ -81,7 +81,7 @@ jobs:
         run: |
           # Copy any additional assets needed for the cache display
           cp cache/images/* _site/images 2>/dev/null || true
-          cp cache/video/* _site/images 2>/dev/null || true
+          cp cache/video/* _site/video 2>/dev/null || true
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
