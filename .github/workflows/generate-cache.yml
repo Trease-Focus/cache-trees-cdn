@@ -35,7 +35,11 @@ jobs:
     steps:
       - name: Checkout this repository
         uses: actions/checkout@v4
-
+      
+      - name: Clone trease-backend repository (with submodules)
+        run: |
+          git clone --recurse-submodules https://github.com/Trease-Focus/trease-tree-compiler.git trease-backend --depth 1
+      
       - name: Pull latest cache from cache-data branch
         run: |
           git fetch origin cache-data || true
@@ -47,11 +51,6 @@ jobs:
             rm -rf cache
           fi
         continue-on-error: true
-      
-      - name: Clone trease-backend repository (with submodules)
-        run: |
-          git clone --recurse-submodules https://github.com/Trease-Focus/trease-tree-compiler.git trease-backend --depth 1
-      
       - name: Install ffmpeg
         run: |
           sudo apt-get update
