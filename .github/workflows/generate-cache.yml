@@ -104,15 +104,16 @@ jobs:
 
       - name: Push cache to cache-data branch
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git fetch origin cache-data || true
-          git checkout -B cache-data origin/cache-data || git checkout --orphan cache-data
-          rm -rf *
-          cp -r _site/* .
-          git add .
-          git commit -m "Update cache $(date -u)" || echo "No changes to commit"
-          git push origin cache-data
+            cd trease-backend/cache
+            git init
+            git config --global user.name "github-actions"
+            git config --global user.email "github-actions@github.com"
+            git remote add origin https://github.com/${{ github.repository }}.git || true
+            git fetch origin cache-data || true
+            git checkout -B cache-data || git checkout --orphan cache-data
+            git add .
+            git commit -m "Update cache $(date -u)" || echo "No changes to commit"
+            git push --force origin cache-data
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
