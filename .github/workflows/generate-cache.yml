@@ -108,7 +108,7 @@ jobs:
             git init
             git config --global user.name "github-actions"
             git config --global user.email "github-actions@github.com"
-            git remote add origin https://github.com/Trease-Focus/cache-trees-cdn.git || true
+            git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/Trease-Focus/cache-trees-cdn.git || true
             git fetch origin cache-data || true
             git checkout -B cache-data || git checkout --orphan cache-data
             git add .
