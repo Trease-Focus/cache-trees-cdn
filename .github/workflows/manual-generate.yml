@@ -2,6 +2,8 @@ name: Manual Generate Cache (No Pull)
 
 on:
   workflow_dispatch:
+
+  
 permissions:
   contents: write
   pages: write
