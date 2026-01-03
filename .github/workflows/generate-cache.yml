@@ -1,10 +1,6 @@
 name: Generate Image Cache and Deploy to GitHub Pages
 
 on:
-  # Run on a schedule (every day at midnight UTC)
-  schedule:
-    - cron: '0 0 * * *'
-  
   # Allow manual trigger
   workflow_dispatch:
   
