@@ -50,7 +50,7 @@ jobs:
       
       - name: Clone trease-backend repository (with submodules)
         run: |
-          git clone --recurse-submodules https://github.com/Trease-Focus/trease-backend.git trease-backend --depth 1
+          git clone --recurse-submodules https://github.com/Trease-Focus/trease-tree-compiler.git trease-backend --depth 1
       
       - name: Install ffmpeg
         run: |
