@@ -1,5 +1,9 @@
 name: Generate Image Cache and Deploy to GitHub Pages
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 on:
   # Run on a schedule (every day at midnight UTC)
   schedule:
