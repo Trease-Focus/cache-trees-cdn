@@ -35,10 +35,22 @@ jobs:
     steps:
       - name: Checkout this repository
         uses: actions/checkout@v4
-      
-      - name: Clone trease-backend repository
+
+      - name: Pull latest cache from cache-data branch
         run: |
-          git clone https://github.com/Trease-Focus/trease-backend.git trease-backend --depth 1
+          git fetch origin cache-data || true
+          git checkout cache-data -- . || true
+          mkdir -p trease-backend/cache/images trease-backend/cache/video
+          # Move pulled cache directly into trease-backend/cache
+          if [ -d cache ]; then
+            cp -r cache/* trease-backend/cache/ 2>/dev/null || true
+            rm -rf cache
+          fi
+        continue-on-error: true
+      
+      - name: Clone trease-backend repository (with submodules)
+        run: |
+          git clone --recurse-submodules https://github.com/Trease-Focus/trease-backend.git trease-backend --depth 1
       
       - name: Install ffmpeg
         run: |
@@ -90,6 +102,20 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: '_site'
+
+      - name: Push cache to cache-data branch
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git fetch origin cache-data || true
+          git checkout -B cache-data origin/cache-data || git checkout --orphan cache-data
+          rm -rf *
+          cp -r _site/* .
+          git add .
+          git commit -m "Update cache $(date -u)" || echo "No changes to commit"
+          git push origin cache-data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     environment:

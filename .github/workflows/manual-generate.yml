@@ -1,0 +1,60 @@
+name: Manual Generate Cache (No Pull)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+      - name: Clone trease-backend repository
+        run: |
+          git clone https://github.com/Trease-Focus/trease-backend.git trease-backend --depth 1
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        working-directory: trease-backend
+        run: bun install
+      - name: Generate Image Cache
+        working-directory: trease-backend
+        run: bun run cache-gen/generate_image_cache.ts
+      - name: Generate Video Cache
+        working-directory: trease-backend
+        run: bun run cache-gen/generate_video_cache.ts
+      - name: Generate Data Cache
+        working-directory: trease-backend
+        run: bun run cache-gen/generate_entity_data.ts
+      - name: Prepare output for GitHub Pages
+        run: |
+          mkdir -p _site
+          cp -r trease-backend/cache/* _site/ 2>/dev/null
+          if [ ! -f _site/index.html ]; then
+            echo '<!DOCTYPE html><html><head><title>Image Cache</title></head><body><h1>Image Cache Generated</h1><p>Last updated: '"$(date -u)"'</p></body></html>' > _site/index.html
+          fi
+      - name: Copy Additional Assets
+        run: |
+          cp cache/images/* _site/images 2>/dev/null || true
+          cp cache/video/* _site/video 2>/dev/null || true
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+  deploy:
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
